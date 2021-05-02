@@ -24,22 +24,34 @@ void encrypt_caesar(std::string &uncryptStr, int shift){
         }
     }
 }
+
+
 void decrypt_caesar(std::string &cryptStr, int shift) {
     encrypt_caesar(cryptStr,-shift);
 }
 
 
-std::string parsedStr;
+
 
 int main() {
+
+    // get str from cin
     std::cout << "Enter your str: ";
+    std::string parsedStr;
     std::getline(std::cin, parsedStr);
+
+    // get shift from cin
     std::cout << "Enter shift: ";
     int shift;
     std::cin >> shift;
+
+    // crypting
     encrypt_caesar(parsedStr,shift);
     std::cout << "Crypted str: " << parsedStr << std::endl;
+
+    // decrypting
     decrypt_caesar(parsedStr,shift);
     std::cout << "Decrypted str: " << parsedStr << std::endl;
+
     return 0;
 }
