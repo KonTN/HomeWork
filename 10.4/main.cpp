@@ -1,5 +1,42 @@
 #include <iostream>
 
+std::string add_zero_back(std::string less, int zeroCount) {
+    std::string cStr;
+    cStr.append(less);
+    for (int i =0; i<zeroCount;i++){
+        cStr.append("0");
+    }
+    return cStr;
+}
+
+std::string add_zero_front(std::string less, int zeroCount) {
+    std::string cStr;
+    if (less.front() == '-') {
+        less.erase(0,1);
+        cStr.append("-");
+    }
+    for (int i =0; i<zeroCount;i++){
+        cStr.append("0");
+    }
+    cStr.append(less);
+    return cStr;
+}
+
+void equalize_values(std::string &first,std::string &second) {
+    if (first.find('.')<second.find('.')){
+        first = add_zero_front(first,int(second.find('.')-first.find('.')));
+    }
+    else {
+        second = add_zero_front(second,int(first.find('.')-second.find('.')));
+    }
+    if (first.size()<second.size()){
+        first = add_zero_back(first,int(second.size()-first.size()));
+    }
+    else {
+        second = add_zero_back(second,int(first.size()-second.size()));
+    }
+}
+
 bool float_validation(std::string num){
     bool pointFlag = false, numFlag = false;
     do {
@@ -17,45 +54,52 @@ bool float_validation(std::string num){
     return numFlag;
 }
 
-void leader_zero_delete(std::string &str){
-    bool minusFlag = false;
-    for (char i : str){
-        if (str.front()=='0') {
-            str.erase(0,1);
-        }
-        else if (str.front() == '-'){
-            str.erase(0,1);
-            minusFlag = true;
-        }
-    }
-    if (minusFlag) str.insert(0,"-");
-    std::cout << str << std::endl;
-}
+
 
 int main() {
+    std::cout << "This program compare 2 numbers written in the next line\n";
     std::string firstNum,secondNum;
     std::cout << "Enter your line: ";
     std::cin >> firstNum >> secondNum;
-    if (float_validation(firstNum)&&float_validation(firstNum)) {
-        leader_zero_delete(firstNum);
-        leader_zero_delete(secondNum);
-        int lowSize =  (firstNum.size()<secondNum.size())?(int)firstNum.size():(int)secondNum.size();
-        for (int i=0;i<lowSize;i++){
-            if (firstNum[i]>secondNum[i]){
-                std::cout << firstNum << " > "  << secondNum;
+
+    // make copy of values so we can modify them without any influences to result output;
+    std::string firstNumC = firstNum;
+    std::string secondNumC = secondNum;
+
+    // add dot to the value if value don`t contain it;
+    if (firstNumC.find('.') == std::string::npos) firstNumC.append(".");
+    if (secondNumC.find('.') == std::string::npos) secondNumC.append(".");
+
+    // swap first and second num if both of they negative (to our comparation work right)
+    if ((firstNumC.front() == '-')&&(secondNumC.front() == '-')) {
+        std::string buff;
+        buff = firstNum;
+        firstNum = secondNum;
+        secondNum = buff;
+    }
+    // only way we to compare this values is that both of this values are float numbers
+    if (float_validation(firstNumC)&&float_validation(secondNumC)) {
+        // all we need is the same integer and float part`s length of both numbers
+        equalize_values(firstNumC,secondNumC);
+        //ASCII table contains characters in gentle to us order
+        // so, all we need is just compare them using ASCII number
+        for (int i = 0; i<firstNumC.size();i++){
+            if (firstNumC[i]<secondNumC[i]){
+                std::cout << firstNum << " < " << secondNum;
                 return 0;
             }
-            else if (firstNum[i]<secondNum[i]) {
-                std::cout << secondNum << " > " << firstNum;
+            else if (secondNumC[i]<firstNumC[i]) {
+                std::cout << firstNum << " > " << secondNum;
                 return 0;
             }
         }
-
+        // if we passed all the way through both values and did`t find bigger or less digit
+        // it meant that values equal to each other
+        std::cout << firstNum << " = " << secondNum;
+        return 0;
     }
     else {
         std::cout << "Error : can`t compare " << firstNum << " and " << secondNum;
         return -1;
     }
-    std::cout << firstNum << " = "  << secondNum;
-    return 0;
 }
