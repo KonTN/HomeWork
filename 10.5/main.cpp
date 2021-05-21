@@ -1,56 +1,49 @@
 #include <iostream>
 #include  <vector>
 std::vector<std::string> field;
+bool try_to_find_winner(const std::vector<std::string> &gameFil){
+    for (int i=0;i<3;i++){
+        if (((gameFil[0][i] == gameFil[1][i])&&(gameFil[1][i] == gameFil[2][i]))&&(gameFil[0][i] != '.')) return true;
+        if (((gameFil[i][0] == gameFil[i][1])&&(gameFil[i][1] == gameFil[i][2]))&&(gameFil[i][0] != '.')) return true;
+    }
 
-bool validate_field(const std::vector<std::string> &field,const char &winner){
-    int dotCounter= 0,xCounter= 0,oCounter = 0;
-    for (std::string line : field){
-        if (line.size()!=3){
-            return false;
-        }
-        for (char h:line){
-           if (h=='.') dotCounter ++;
-           if (h=='X') xCounter ++;
-           if (h=='O') oCounter ++;
+    if ((gameFil[0][0] == gameFil[1][1])&&(gameFil[1][1] == gameFil[2][2])&&(gameFil[0][0] != '.')) return true;
+    if ((gameFil[0][2] == gameFil[1][1])&&(gameFil[1][1] == gameFil[2][0])&&(gameFil[0][2] != '.')) return true;
+    return false;
+}
+bool validate_field(const std::vector<std::string> &gameFil) {
+    int dotCounter = 0,xCounter = 0, oCounter = 0;
+    for (const std::string &i : gameFil){
+        for (const char j : i){
+            if (j == '.') dotCounter ++;
+            else if (j == 'X') xCounter ++;
+            else if (j == 'O') oCounter ++;
         }
     }
-    if ((winner != 'X')&&(winner != 'O')) return false;
-    if ((winner == 'X')&&(xCounter<=oCounter)) return false;
-    if ((winner == 'O')&&(oCounter<=xCounter)) return false;
-    if (abs(xCounter-oCounter)>1) return false;
-    if (xCounter+oCounter+dotCounter!=9) return false;
+    if (dotCounter+xCounter+oCounter!=9) return  false;
+    if (abs(oCounter-xCounter)>1) return false;
+    if (oCounter == xCounter) return false;
     return true;
 }
-
-char calculate_winner(const std::vector<std::string> &field) {
-    // size check
-    if (field.size()<3) return '?';
-    for (std::string line : field) if (line.size()<3) return '?';
-
-
-    for (int i=0;i<3;i++){
-        if ((field[i][0]==field[i][1]==field[i][2])&&(field[i][0]!='.')) return field[i][0]; // all lines
-        if ((field[0][i]==field[1][i]==field[2][i])&&(field[0][i]!='.')) return field[i][0]; // all columns
+char find_winner(const std::vector<std::string> &gameFil){
+    int xCounter = 0,oCounter = 0;
+    for (const std::string &i : gameFil){
+        for (const  char j : i){
+            if (j == 'X') xCounter ++;
+            else if (j == 'O') oCounter ++;
+        }
     }
-
-    // diagonals
-    if ((field[0][0]==field[1][1]==field[2][2])&&(field[0][0]!='.')) return field[0][0];
-    if ((field[2][0]==field[1][1]==field[0][2])&&(field[2][0]!='.')) return field[2][0];
-
-    // return . if non won
-    return '?';
+    return ((xCounter>oCounter)?'X':'O');
 }
-
 int main() {
     std::string buff;
     for (int i=0;field.size()<3;i++){
         std::getline(std::cin,buff);
         if (!buff.empty()) field.push_back(buff);
     }
-    char winner = calculate_winner(field);
-    if ((validate_field(field,winner))&&((winner != 'X')&&(winner != 'O'))) std::cout << "impossible calculate the winner\n";
-    else  std::cout << winner << " won, congratulations!";
-
-
+    bool first = try_to_find_winner(field);
+    bool second = validate_field(field);
+    if(try_to_find_winner(field)&&validate_field(field)) std::cout << find_winner(field) << " Won congratulation!";
+    else std::cout << "can not calculate winner.";
     return 0;
 }
