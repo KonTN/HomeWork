@@ -54,7 +54,15 @@ bool float_validation(std::string num){
     return numFlag;
 }
 
-
+int minus_zero_delete(std::string &num){
+    if (num.front() == '-') {
+        for (const char i : num) {
+            if (!((i =='0')||(i=='.')||(i=='-'))) return 1;
+        }
+        num.front() = '0';
+    }
+    return 0;
+}
 
 int main() {
     std::cout << "This program compare 2 numbers written in the next line\n";
@@ -77,11 +85,14 @@ int main() {
         firstNum = secondNum;
         secondNum = buff;
     }
+    //delete minus if it zero
+    minus_zero_delete(firstNumC);
+    minus_zero_delete(secondNumC);
     // only way we to compare this values is that both of this values are float numbers
     if (float_validation(firstNumC)&&float_validation(secondNumC)) {
-        // all we need is the same integer and float part`s length of both numbers
+        // equlize characters quantity
         equalize_values(firstNumC,secondNumC);
-        //ASCII table contains characters in gentle to us order
+        // ASCII table contains characters in gentle to us order
         // so, all we need is just compare them using ASCII number
         for (int i = 0; i<firstNumC.size();i++){
             if (firstNumC[i]<secondNumC[i]){
