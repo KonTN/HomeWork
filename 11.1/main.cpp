@@ -6,11 +6,9 @@ bool medium[] = {true,true,true};
 bool large[] = {true,true,true,true};
 
 int main() {
-    // righter version would be sizeof(mass)/sizeof(elem), but bool variable take only one bit of memory
-    // so we not need use dividing to get right result
-    std::cout << sizeof(tiny)<< std::endl;
-    std::cout << sizeof(small) << std::endl;
-    std::cout << sizeof(medium) << std::endl;
-    std::cout << sizeof(large) << std::endl;
+    std::cout << sizeof(tiny)/sizeof(tiny[0])<< std::endl;
+    std::cout << sizeof(small)/sizeof(small[0]) << std::endl;
+    std::cout << sizeof(medium)/sizeof(medium[0]) << std::endl;
+    std::cout << sizeof(large)/sizeof(large[0]) << std::endl;
     return 0;
 }
