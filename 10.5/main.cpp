@@ -41,8 +41,6 @@ int main() {
         std::getline(std::cin,buff);
         if (!buff.empty()) field.push_back(buff);
     }
-    bool first = try_to_find_winner(field);
-    bool second = validate_field(field);
     if(try_to_find_winner(field)&&validate_field(field)) std::cout << find_winner(field) << " Won congratulation!";
     else std::cout << "can not calculate winner.";
     return 0;
