@@ -22,12 +22,14 @@ int main() {
     int erase_val;
     std::cout << "Enter erase value: ";
     std::cin >> erase_val;
-    std::vector<int> copy_vec;
-    for (int i : num_vec){
-        if (i!=erase_val) copy_vec.push_back(i);
+    int base = 0;
+    for (int i;i<num_vec.size();i++){
+        if (num_vec[i]!=erase_val) {
+            num_vec[base] = num_vec[i];
+            base++;
+        };
     }
-    num_vec = copy_vec;
-
+    num_vec.resize(base);
 
     // cout vector
     for (int i : num_vec){

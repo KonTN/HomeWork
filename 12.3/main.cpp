@@ -5,24 +5,21 @@ std::vector<int> base;
 
 int main() {
     int inp;
-    int ofsend = 0;
+    int tail = 0;
     std::cin >> inp;
     while (inp != -1){
-        base.push_back(inp);
-        for (int i : base) std::cout << i << ' ';
 
-        if (base.size()>20){
-            ofsend ++;
-            if (base.size()==base.capacity()){
-               for (int i = ofsend;i<base.size();i++) base[i-ofsend] = base[i];
-               base.resize(20);
-               ofsend = 0;
-            }
+        if (base.size()>=20) {
+            base[tail] = inp;
+            tail ++;
+            if (tail >=20) tail = 0;
         }
+        else base.push_back(inp);
+        for (int i : base) std::cout << i << ' ';
         std::cin >> inp;
-
     }
-    for (int i = ofsend;i<base.size();i++) base[i-ofsend] = base[i];
-    base.resize(20);
+    for (int i=0;i<base.size();i++){
+        base[i] = base[(i+tail>20)?i+tail-20:i+tail];
+    }
     for (int i : base) std::cout << i << ' ';
 }
