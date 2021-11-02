@@ -1,6 +1,6 @@
 #include <iostream>
 # include <vector>
-std::vector<int> mass = {2,1,3,4,1,2,1,5,4};
+std::vector<int> mass = {-2,1,-3,4,-1,2,1,-5,4};
 int coord[2];
 int  summ(int start,int end){
     int resoult =  0;
