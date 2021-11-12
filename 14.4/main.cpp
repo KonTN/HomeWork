@@ -16,7 +16,8 @@ int main(){
     negative_poss = positive_poss -1;
 
     for (int i=0;i<mass.size();i++){
-
+        if (positive_poss >= mass.size()) positive_poss = mass.size()-1;
+        if (negative_poss < 0) negative_poss = 0; 
         if (abs(mass[positive_poss])>abs(mass[negative_poss])){
             std::cout << mass[negative_poss] << ' ';
             negative_poss --;
