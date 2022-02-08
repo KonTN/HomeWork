@@ -1,9 +1,6 @@
 #include <vector>
 #include <iostream>
 
-
-
-
 int main(){
     std::vector<int> mass = {-100,-50, -5, 1, 10, 15};
 
@@ -15,9 +12,7 @@ int main(){
      // first negative would be
     negative_poss = positive_poss -1;
 
-    for (int i=0;i<mass.size();i++){
-        if (positive_poss >= mass.size()) positive_poss = mass.size()-1;
-        if (negative_poss < 0) negative_poss = 0; 
+    while ((negative_poss>=0)||(positive_poss < mass.size())){
         if (abs(mass[positive_poss])>abs(mass[negative_poss])){
             std::cout << mass[negative_poss] << ' ';
             negative_poss --;
@@ -26,9 +21,8 @@ int main(){
             std::cout << mass[positive_poss] << ' ';
             positive_poss ++;               
         }
-
     }
-
+    
     std::cout << std::endl;
     system("pause");
     return 0;
