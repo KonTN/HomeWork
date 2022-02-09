@@ -13,17 +13,16 @@ int main(){
     negative_poss = positive_poss -1;
 
     while ((negative_poss>=0)||(positive_poss < mass.size())){
-        if (abs(mass[positive_poss])>abs(mass[negative_poss])){
+        if ((negative_poss >= 0)&&(abs(mass[positive_poss])>abs(mass[negative_poss]))){
             std::cout << mass[negative_poss] << ' ';
             negative_poss --;
         }
-        else {
+        else if (positive_poss<mass.size()) {
             std::cout << mass[positive_poss] << ' ';
             positive_poss ++;               
         }
     }
     
     std::cout << std::endl;
-    system("pause");
     return 0;
 }
