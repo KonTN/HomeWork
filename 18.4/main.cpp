@@ -22,8 +22,9 @@ int main(int argc, char** argv){
     if(path.substr(path.find('.')+1,3)== "png"){
         char buff[4];
         file >> buff;
-        if ((buff[0] == -119)&&(buff[1] = 'P')&&(buff[2] = 'N')&&(buff[3] = 'G')){
+        if ((buff[0] == -119)&&(buff[1] == 'P')&&(buff[2] == 'N')&&(buff[3] == 'G')){
             std::cout << "PNG file" << std::endl;
+            file.close();
             return 0;
         }
     }
