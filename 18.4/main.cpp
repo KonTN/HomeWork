@@ -12,7 +12,7 @@ int main(int argc, char** argv){
     std::cin >> path;
 
     std::ifstream file;
-    file.open(path); 
+    file.open(path,std::ios::binary); 
     if (!file.is_open()){
         std::cout << "Error can`t open file \""<< path << "\"" << std::endl;
         return 1;
@@ -31,5 +31,6 @@ int main(int argc, char** argv){
 
 
     std::cout << "not PNG file" << std::endl;
+    file.close();
     return 0;
 }

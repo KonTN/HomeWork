@@ -36,6 +36,6 @@ int main(int argc,char** argv){
 
     std::cout << maxName << " has the highest salary ( "<< max << " )" << std::endl;
     std::cout << "Total salary: " << sum << std::endl;
-
+    file.close();
     return 0;
 }

@@ -9,16 +9,19 @@ int main(int argc, char** argv){
     std::cin >> path;
 
     std::ifstream file;
-    file.open(path); 
+    file.open(path, std::ios::binary); 
     if (!file.is_open()){
         std::cout << "Error can`t open file \""<< path << "\"" << std::endl;
         return 1;
     }
 
-    std::string buff;
-    while (getline(file,buff)){
-        std::cout << buff << std::endl;
+    char buff[16];
+    while (!file.eof()){
+        file.read(buff, sizeof(buff) - 1);
+        buff[file.gcount()] = 0;
+        std::cout << buff ;
     }
 
+    file.close();
     return 0;
 }
