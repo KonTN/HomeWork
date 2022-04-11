@@ -2,6 +2,13 @@
 #include <string>
 #include <fstream>
 
+enum direction {
+    LEFT = 0,
+    UP,
+    RIGHT,
+    DOWN
+};
+
 struct point{
     int x = 0;
     int y = 0;
@@ -15,38 +22,86 @@ struct entity {
     point coord;
 };
 
-void make_field(const entity enemy[], const int enemyCounter,const entity player, 
-                char* fieldBuff, const int width, const int height){
+struct fieldStruct{
+    static int width = 40;
+    static int height = 20;
+    char buff[width*height];
+};
 
-    for (int i = 0; i < height; i++){
-        for (int j =0 ; j < width; j++){
-            fieldBuff[i*width+j] = '.';
+void make_field(const entity enemy[], const int enemyCounter,const entity player, 
+                fieldStruct f){
+
+    for (int i = 0; i < f.height; i++){
+        for (int j =0 ; j < f.width; j++){
+            f.buff[i*f.width+j] = '.';
         }
     }
     for (int i=0;i<enemyCounter;i++){
         if (enemy[i].hp > 0){
-            fieldBuff[enemy[i].coord.y*width+enemy[i].coord.x] = 'E';
+            f.buff[enemy[i].coord.y*f.width+enemy[i].coord.x] = 'E';
         }
     }
-    fieldBuff[player.coord.y*width+player.coord.x] = 'P';
+    f.buff[player.coord.y*f.width+player.coord.x] = 'P';
 }
 
-int print_field(const char* fieldBuff,const int width,const int height){
+void print_field(const fieldStruct& f){
     
-    for (int i = 0; i<height;i++){
-        for (int j = 0; j<width;j++){
-          std::cout << fieldBuff[i*width+j];
+    for (int i = 0; i<f.height;i++){
+        for (int j = 0; j<f.width;j++){
+          std::cout << f.buff[i*f.width+j];
         }
         std::cout << std::endl;
     }
+}
+
+int deal_damage(const entity sourse, entity recipient){
+    if (sourse.hp <= 0) {
+        std::cout << "Error: zero hp entity ("<< sourse.name ") tries do damage";
+        return 1;
+    }
+    if (sourse.dmg < 0){
+        std::cout << "Error: entity ("<< sourse.name ") has negative damage";
+        return 1;
+    }
+    int remainDmg = sourse.dmg;
+    remainDmg -= recipient.armor;
+    recipient.armor -= sourse.dmg;
+    if (recipient.armor < 0)  recipient.armor = 0;
+    if (remainDmg > 0) recipient.hp -= remainDmg;
+    if (recipient.hp < 0) recipient.hp = 0;
+    std::cout << sourse.name << " deal " << sourse.dmg << " to " << recipient.name << std::endl;
+    std::cout << recipient.name << " now have " << recipient.armor << "armor and " << recipient.hp << " hp" << std::endl;
     return 0;
 }
 
 
+int make_move(const fieldStruct f, const entity sourse, const int dir){
+    switch (dir)
+    {
+        case LEFT:
+            if (f[sourse.coord.y*sqreen])
+            break;
+        case UP:
+            /* code */
+            break;
+        case RIGHT:
+            /* code */
+            break;
+        case DOWN:
+            /* code */
+            break;
+        
+        default:
+            std::cout << "Error: wrong movement direction command";
+            return 1;
+            break;
+    }
+}
 
 int main(int argc, char** argv){
     
     // initialization
+    fieldStruct field;
     const int enemyCounter = 5;
     const int sqreenWidth = 40; 
     const int sqreenHeihgt = 10;
@@ -54,8 +109,8 @@ int main(int argc, char** argv){
     entity player;
     entity enemy[enemyCounter];
     
-    char field[sqreenHeihgt*sqreenWidth];
     
+
     // format main menu
     for (int i = 0;i<sqreenWidth;i++)std::cout << "=";
     std::cout << std::endl;
@@ -158,58 +213,7 @@ int main(int argc, char** argv){
         // calculate enemy movement
         for (int i = 0;i < enemyCounter; i++){
             if (enemy[i].hp>0){
-                int dir = rand()%4;
-                switch (dir)
-                {
-                case 0:
-                    if (enemy[i].coord.x-1 >= 0) {
-                        if (field[enemy[i].coord.y*sqreenWidth+(enemy[i].coord.x-1)] == '.'){
-                            enemy[i].coord.x --;
-                        }
-                        if (field[enemy[i].coord.y*sqreenWidth+(enemy[i].coord.x-1)] == 'P'){
-                            player.hp -=enemy[i].dmg-player.armor;
-                            player.armor -= enemy[i].dmg;
-                            std::cout << "Player take " << enemy[i].dmg << " damage from " << enemy[i].name << std::endl;
-                        }
-                    }
-                    break;
-                case 1:
-                    if (enemy[i].coord.y-1 >= 0) {
-                        if (field[(enemy[i].coord.y-1)*sqreenWidth+enemy[i].coord.x] == '.'){
-                            enemy[i].coord.y --;
-                        }
-                        if (field[(enemy[i].coord.y-1)*sqreenWidth+enemy[i].coord.x] == 'P'){
-                            player.hp -=enemy[i].dmg-player.armor;
-                            player.armor -= enemy[i].dmg;
-                            std::cout << "Player take " << enemy[i].dmg << " damage from " << enemy[i].name << std::endl;
-                        }
-                    }
-                    break;
-                case 2:
-                    if (enemy[i].coord.x+1 <= sqreenWidth) {
-                        if (field[enemy[i].coord.y*sqreenWidth+(enemy[i].coord.x+1)] == '.'){
-                            enemy[i].coord.x ++;
-                        }
-                        if (field[enemy[i].coord.y*sqreenWidth+(enemy[i].coord.x+1)] == 'P'){
-                            player.hp -=enemy[i].dmg-player.armor;
-                            player.armor -= enemy[i].dmg;
-                            std::cout << "Player take " << enemy[i].dmg << " damage from " << enemy[i].name << std::endl;
-                        }
-                    }
-                    break;
-                case 3:
-                    if (enemy[i].coord.y+1 <= sqreenHeihgt) {
-                        if (field[(enemy[i].coord.y+1)*sqreenWidth+enemy[i].coord.x] == '.'){
-                            enemy[i].coord.y ++;
-                        }
-                        if (field[(enemy[i].coord.y+1)*sqreenWidth+enemy[i].coord.x] == 'P'){
-                            player.hp -=enemy[i].dmg-player.armor;
-                            player.armor -= enemy[i].dmg;
-                            std::cout << "Player take " << enemy[i].dmg << " damage from " << enemy[i].name << std::endl;
-                        }
-                    }
-                    break;
-                }
+                make_movement(enemy,dir);
             }
         }
         
