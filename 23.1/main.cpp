@@ -31,7 +31,7 @@ int main(int argc, char** argv ) {
         if (command.find("begin") != std::string::npos)
         {
             // end time recording
-            if (curAcvName != "") // if we start recording any activity
+            if (!curAcvName.empty()) // if we start recording any activity
             {
                 stop_time(acvTimeMap[curAcvName]);    
             }
@@ -72,7 +72,7 @@ int main(int argc, char** argv ) {
                     std::cout << "  " << pr.first << " - " << std::put_time(std::localtime(&pr.second), "%H:%M:%S") << std::endl;       
                 }
             }
-            std::cout << "current activity: " << (curAcvName == "" ? "none" : curAcvName) << std::endl;
+            std::cout << "current activity: " << (curAcvName.empty()? "none" : curAcvName) << std::endl;
 
             continue;
         } 

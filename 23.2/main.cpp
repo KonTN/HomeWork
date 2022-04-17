@@ -47,8 +47,10 @@ int main(int argc, char** argv)
             continue;
         }
 
-        std::cout << "Error: wrong command, try again" << std::endl;
+        std::cout << "Error: wrong command, try again "<< std::endl;
         std::cin.clear();
+        std::string temp;
+        std::getline(std::cin,temp);
 
     } while (command != "end");
 
