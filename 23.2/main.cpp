@@ -24,11 +24,11 @@ int main(int argc, char** argv)
         std::string name = command;
 
         // create dummy tm struct to parse date from std::cin
-        std::time_t ltime = std::time(nullptr);
-        std::tm* dymmyDate = std::localtime(&ltime);
+        std::time_t dtime = std::time(nullptr);
+        std::tm* dymmyDate = std::localtime(&dtime);
         std::cin >> std::get_time(dymmyDate,"%Y/%m/%d"); // try get date in right format
         std::mktime(dymmyDate);
-        if (std::cin.good())
+        if (std::cin.good()) // if get_time() does`t trow bad flag
         {
             int days = dymmyDate->tm_yday;
             if (bMap.count(days)) // if that date already in bMap
