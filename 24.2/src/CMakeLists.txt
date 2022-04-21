@@ -7,12 +7,7 @@ add_executable(computer_sim
                disk.cpp
                gpu.cpp 
                kbd.cpp 
-               ram.cpp
-               ${PR_DIR}/cpu.h 
-               ${PR_DIR}/disk.h 
-               ${PR_DIR}/gpu.h 
-               ${PR_DIR}/kbd.h 
-               ${PR_DIR}/ram.h)
+               ram.cpp)
 
 
 
