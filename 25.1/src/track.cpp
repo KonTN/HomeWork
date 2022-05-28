@@ -1,71 +1,43 @@
 #include "track.h"
 
+#include <sstream>
 
-Track::Track(std::string data_line)
+
+
+
+Track::Track(std::string info)
 {
-    std::stringstream dataStr;
-    dataStr << data_line;
-
-    dataStr >> name;
-    dataStr >> duration.min;
-    char dummyDelim;
-    dataStr >> dummyDelim;
-    dataStr >> duration.sek;
-
-    dataStr >> date.tm_year;
-    dataStr >> dummyDelim;
-    dataStr >> date.tm_mon;
-    dataStr >> dummyDelim;
-    dataStr >> date.tm_mday;
-
-    if (dataStr.fail())
-    {
-        name = "EMPTY_NAME";
-        duration.min = 0;
-        duration.sek = 0;
-        std::time_t dTime = std::time(nullptr);
-        std::tm *dates = localtime(&dTime);
-        date = *dates;
-    }
-};
-
-
-
-Track::Track(std::string _name,int _duration,std::tm _date)
-{
-    if (!_name.empty())name = _name;
-    else name = "EMPTY_NAME";
-
-    duration.min = _duration/60;
-    duration.sek = _duration%60;
     
-    date = _date;
-};
+    std::stringstream infoStm;
+    infoStm << info;
 
+    // parse info stream
+    infoStm >> name;
+    bool fail = infoStm.fail();
+    infoStm >> std::get_time(&date, "%H:%M:%S %d/%m/%Y");
+    fail = infoStm.fail();
+
+    if (infoStm.fail())
+    {
+        name = "ERROR_NAME";
+        date.tm_min = 1;
+        date.tm_hour = 1;
+        date.tm_sec  = 1;
+        date.tm_mday = 1;
+        date.tm_mon = 1;
+        date.tm_year = 1;
+    }
+}
+
+
+std::string Track::get_info()
+{
+    std::stringstream retStm;
+    retStm << name << " " << std::put_time(&date, "%H:%M:%S %d/%m/%Y");
+    return retStm.str();
+}
 
 std::string Track::get_name()
 {
     return name;
-};
-
-std::string Track::get_duaration_str()
-{
-    std::string retStr = "";
-    retStr+=std::to_string(duration.min);
-    retStr.push_back(':');
-    retStr+=std::to_string(duration.sek);
-
-    return retStr;
-};
-
-std::string Track::get_date_str()
-{
-    std::string retStr = "";
-    retStr += std::to_string(date.tm_mday);
-    retStr.push_back('/');
-    retStr += std::to_string(date.tm_mon);
-    retStr.push_back('/');
-    retStr += std::to_string(date.tm_year);
-    
-    return retStr;
 }

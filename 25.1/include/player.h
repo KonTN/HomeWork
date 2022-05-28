@@ -1,32 +1,35 @@
 #pragma once
 
+
 #include <vector>
-#include <fstream>
+#include <string>
+
 #include "track.h"
 
 class Player
 {
     public:
-        Player(std::string playlistPath = "playlist.txt");
-        
-        std::string get_current_track();
-        std::string get_state();
-        
-        int play(std::string trackName);
-        void stop();
-        void pause();
-        void next();
-        
-    private:
-        enum class states
-        {
-            PLAY,
-            STOP,
-            PAUSE,
-            ERROR
-        };
+        Player(std::string playlistFilePath = "tracks.txt");
 
+        void play(std::string name);
+        void pause();
+        void stop();
+        void next();
+
+        enum class states 
+        {
+            ERROR,
+            PLAYING,
+            PAUSE,
+            STOPED,
+        };
+        states get_state();
+        
+        Track get_track();
+
+        ~Player();
+    private:
+        states currentState;
+        Track* currentTrackPtr;
         std::vector<Track> playlist;
-        states state;
-        int current_track;
 };

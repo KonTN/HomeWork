@@ -7,6 +7,5 @@ add_executable(player_sim
                track.cpp
                )
 
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/play.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tracks.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(player_sim PUBLIC ${PR_DIR})

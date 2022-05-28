@@ -1,27 +1,19 @@
 #pragma once
 
-#include<string>
-#include<ctime>
-#include<sstream>
-
+#include <string>
+#include <iomanip>
+#include <ctime>
 
 
 class Track
-{   
+{
     public:
-        Track(std::string _name,int _duration,std::tm _date);
-        Track(std::string data_line);
+        Track(std::string info); //info format "name hh:mm:ss DD/MM/YYYY"  
+        std::string get_info();  //               ^- track name 
+                                 //                      ^- track duration
+                                 //                                ^= date of track creation
         std::string get_name();
-        std::string get_duaration_str();
-        std::string get_date_str();
     private:
-        struct timePattern
-        {
-            int min;
-            int sek;
-        };
         std::string name;
-        timePattern duration; 
         std::tm date;
 };
-

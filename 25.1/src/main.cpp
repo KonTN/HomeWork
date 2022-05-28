@@ -1,85 +1,100 @@
 #include <iostream>
-#include <string>
 #include <fstream>
+#include "track.h"
 #include "player.h"
 
-
-int main()
-{
-    std::cout << "-----------------------\n";
-    std::cout << "      player sim\n";
-    std::cout << "-----------------------\n";
-    std::cout << "command list:\n";
-    std::cout << "  'play'\n  'pause'\n  'stop'\n  'exit'\n";
-    std::cout << "-----------------------\n";
-    std::cout << "playlist: \n";
+int main(int argc, char** argv) {
+    //start init
+    Player plr("tracks.txt");
     
-    std::ifstream playlistFile;
-    playlistFile.open("play.txt");
-    if (!playlistFile.is_open()) return 1;
-    std::string line;
-    while (std::getline(playlistFile,line))
-    {
-        std::cout << "  " << line << std::endl;
-    }
-    playlistFile.close();
-    std::cout << "-----------------------\n";
-    std::cout << "Enter your command: " << std::endl;
-    
-    Player player("play.txt");
+    // print header
+        std::cout << "-----------------------\n";
+        std::cout << "      player sim\n";
+        std::cout << "-----------------------\n";
+        std::cout << "command list:\n";
+        std::cout << "  'play'\n  'pause'\n  'stop'\n  'exit'\n";
+        std::cout << "-----------------------\n";
+        std::cout << "playlist: \n";
+        // pring playlist 
+            std::ifstream playlistFile;
+            playlistFile.open("tracks.txt");
+            if (!playlistFile.is_open()) return 1;
+            std::string line;
+            while (std::getline(playlistFile,line))
+            {
+                std::cout << "  " << line << std::endl;
+            }
+            playlistFile.close();
+        std::cout << "-----------------------\n";
+        std::cout << "Enter your command: " << std::endl;
+        
+    // sim loop
     std::string command;
     do {
-        std::cin >> command;
-        if (command == "play")
-        {
-            std::string name = "";
-
-            if (player.get_state()=="PLAY") continue; // if player already playing
-            // we has nothond to do
-            if (player.get_state()=="PAUSE")
-            {
-                player.play(name);
-                std::cout << player.get_current_track() << std::endl;
-                continue;    
-            }
             
-            std::cout << "Enter Track name:";
-            std::cin >> name;
-            if (player.play(name))
+        if (plr.get_state() == Player::states::ERROR) 
+        {
+            std::cout << "Player ERROR" << std::endl;
+            return 1;
+        }
+
+        std::cin >> command; // get command
+        
+        if (command == "play") 
+        {
+            if (plr.get_state() == Player::states::STOPED)
             {
-                std::cout << "Error: cant find track with " << name << " name" << std::endl;
+                std::string name;
+                std::cout << "Enter song name: ";
+                std::cin >> name;
+                plr.play(name);
+                if (plr.get_state() == Player::states::PLAYING) // if we found song with that name in player playlist 
+                {
+                    std::cout << "PLAY: " << plr.get_track().get_info() << std::endl;
+                    
+                }
+                else std::cout << "Can't find any \"" << name << "\" track" << std::endl;
+                continue;
             }
-            else std::cout << player.get_current_track() << std::endl;
+            if (plr.get_state() == Player::states::PAUSE)
+            {
+                std::cout << "PLAY: " << plr.get_track().get_info() << std::endl; 
+            }
+            continue;
         }
 
         if (command == "pause")
         {
-            if (player.get_state() == "PLAY")
+            if (plr.get_state() == Player::states::PLAYING)
             {
-                std::cout << "Player has been paused" << std::endl;
-                player.pause();
+                plr.pause();
+                std::cout << "player: PAUSE" << std::endl;
             }
+            continue;
         }
         
         if (command == "next")
         {
-            std::cout << "playing next track" << std::endl;
-            player.next();
-            std::cout  << player.get_current_track() << std::endl;;
+           plr.next();
+           std::cout << "PLAY: " << plr.get_track().get_info() << std::endl;
+           continue;
         }
         
         if (command == "stop")
         {
-            if ((player.get_state() == "PLAY")||(player.get_state()=="PAUSE"))
-            {
-                std::cout << "stop playing music" << std::endl;
-                player.stop();
-            }
+           if ((plr.get_state() == Player::states::PLAYING)||(plr.get_state() == Player::states::PAUSE))
+           {
+               plr.stop();
+               std::cout << "player: STOP" << std::endl;
+           }
+           continue;
         }
 
+        if (command == "exit") continue;
+        
+        std::cout << "Unknown command: " << command << std::endl;
+
     } while (command != "exit");
-    std::cout << "" << std::endl;
-
-
+    
     return 0;
 }

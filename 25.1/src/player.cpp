@@ -1,119 +1,99 @@
 #include "player.h"
 
+#include <fstream>
 
-
-
-Player::Player(std::string playlistPath)
+Player::Player(std::string playlistFilePath)
 {
-    std::ifstream playlistFile;
-    playlistFile.open(playlistPath);
-    
-    if (!playlistFile.is_open()) // push empty track in play list
-    {
-        Track dummyTrack("");
-        playlist.push_back(dummyTrack);
-    }
-   
-    std::string line;
-    while (std::getline(playlistFile,line))
-    {
-        Track dummyTrack(line);
-        playlist.push_back(dummyTrack);
-    }
 
-    // inicialize start player parametrs
-    current_track = -1;
-    state = Player::states::STOP;
-    playlistFile.close();
-};
+    // parse playlist file
+        std::ifstream playlistFile;
+        playlistFile.open(playlistFilePath);
 
-
-std::string Player::get_current_track()
-{
-    std::string retStr = "";
-        
-    if (((state == Player::states::PLAY)||
-        (state == Player::states::PAUSE))&&
-        (current_track < playlist.size())&&
-        (current_track >= 0))
-    {
-        retStr += playlist[current_track].get_name() + " ";
-        retStr += playlist[current_track].get_duaration_str() + " ";
-        retStr += playlist[current_track].get_date_str();   
-        return retStr;
-    }
-
-    retStr = "no song is being performed right now";
-    return retStr;
-};
-
-int Player::play(std::string trackName)
-{
-    if (state == Player::states::PAUSE)
-    {
-        state = Player::states::PLAY;
-        return 0;
-    }
-    
-    if (state == Player::states::STOP)
-    {
-        for (int i=0;i<playlist.size();i++)
+        if (playlistFile.is_open()) // start loading tracks
         {
-            if (playlist[i].get_name() == trackName)
+            std::string buff = "";
+            while (std::getline(playlistFile,buff))
             {
-                current_track = i;
-                state = Player::states::PLAY;
-                return 0;
+                Track dummy(buff);
+                playlist.push_back(dummy);
             }
         }
-        return 1;
-    }
+        playlistFile.close();
 
-    if (state == Player::states::PLAY)
-    {
-        return 0;
-    }
+    if (playlist.empty()) // if can't load any track
+        currentState = states::ERROR;
+    else 
+        currentState = states::STOPED;
+    
+    currentTrackPtr = nullptr;
+}
 
-    if (state == Player::states::ERROR)
-    {
-        return 1;
-    }
-
-    return 1;
-};
-
-void Player::stop()
+Player::states Player::get_state()
 {
-    current_track = -1;
-    state = Player::states::STOP;
-};
+    return currentState;
+}
+
+Track Player::get_track()
+{
+    if (currentTrackPtr != nullptr)
+    {
+        Track retTrack("");
+        retTrack = *currentTrackPtr;
+        return *currentTrackPtr;
+    }
+    else 
+    {
+        Track emptyTrack("");
+        return emptyTrack;
+    }
+}
+
+void Player::play(std::string name)
+{
+    switch (currentState)
+    {
+        case states::STOPED:
+            for (Track& trk : playlist)
+            {
+                if (trk.get_name() == name)
+                {
+                    currentTrackPtr = &trk;
+                    currentState = states::PLAYING;
+                    break;
+                }
+            }
+            if (currentState == states::PLAYING) break;
+            currentTrackPtr = nullptr;
+            currentState = states::STOPED;
+        break;
+
+        case states::PAUSE:
+            currentState = states::PLAYING;
+        break;
+    } 
+}
 
 void Player::pause()
 {
-    state = Player::states::PAUSE;
+    if (currentTrackPtr != nullptr)
+        currentState = states::PAUSE;
+}       
+
+void Player::stop()
+{
+    currentState = states::STOPED;
+    currentTrackPtr = nullptr;
 }
 
 void Player::next()
 {
+    currentState = states::PLAYING;
     srand(std::time(nullptr));
-    int num = std::rand()%playlist.size();
-    current_track = num;
-    state = Player::states::PLAY;
-};
+    currentTrackPtr = &playlist[rand()%playlist.size()];
+}
 
 
-std::string Player::get_state()
+Player::~Player()
 {
-    switch (state)
-    {
-    case Player::states::PLAY:
-        return "PLAY";
-    case Player::states::PAUSE:
-        return "PAUSE";
-    case Player::states::STOP:
-        return "STOP";
-    default:
-        return "ERROR";
-    }
-    
+
 }
