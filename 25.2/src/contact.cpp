@@ -45,9 +45,8 @@ void Contact::add_number(std::string number)
         long dummy = stol(number.substr(2,number.size()));
         numberList.insert(dummy);
     }
-<<<<<<< HEAD
-}
-=======
 }
 
->>>>>>> 26e9fd103b5b7ef9b8f9dfc0d3276a3c05aedb4d
+
+
+
