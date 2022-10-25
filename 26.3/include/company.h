@@ -1,44 +1,50 @@
 #pragma once
 #include <string>
-#include <vector>
+#include <list>
 
 namespace company
 {
-    
-
     class Worker
     {
         public:
             Worker();
             Worker(std::string name);
-            int set_job(char job);
-            char get_job();
+            void take_task(int task);
+            bool empty_task_check();
+            std::string job_report();
         private:
-            std::string myName;
-            char myJob;
+            std::string m_name;
+            int  m_task;
     };
-
 
     class Manager : public Worker
     {
         public:
-            Manager(std::string name, int id, std::vector<std::string> teamNames);
-            int set_job(int job);
+            Manager();
+            Manager(std::string name, int id , std::list<Worker>& team);
+            void free_team();
+            int give_task();
+            std::string team_report();
+            bool operator == (Manager m);
+            std::string m_name;
         private:
-            int myId;
-            std::string myName;
-            int myJob;
-            std::vector<Worker> myTeam;
+            
+            int m_id;
+            int m_task;
+            std::list<Worker> m_free_teamates;
+            std::list<Worker> m_busy_teamates;
     };
 
-    class Principal : public Manager
+    class Director : public Manager 
     {
         public:
-            Principal(std::string name, std::vector<std::string> teamNames);
-            int set_job(int job);
+            Director(std::string name, std::list<Manager>& team);
+            int give_task();
+            std::string team_report();
         private:
-            std::string myName;
-            int myJob;
-            std::vector<Manager> myTeam;
+            std::string m_name;
+            int m_task;
+            std::list<Manager> m_free_teamates;
+            std::list<Manager> m_busy_teamates;
     };
 }
