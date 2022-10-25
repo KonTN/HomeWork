@@ -32,6 +32,7 @@ int main(int, char**) {
         teams.push_back(m);
     }
     
+
     company::Director director("Drector",teams);
     
     std::cout << "################################\n";

@@ -21,7 +21,7 @@ namespace company
     {
         public:
             Manager();
-            Manager(std::string name, int id , std::list<Worker>& team);
+            Manager(std::string name, int id , std::list<Worker> team);
             void free_team();
             int give_task();
             std::string team_report();
@@ -38,7 +38,7 @@ namespace company
     class Director : public Manager 
     {
         public:
-            Director(std::string name, std::list<Manager>& team);
+            Director(std::string name, std::list<Manager> team);
             int give_task();
             std::string team_report();
         private:

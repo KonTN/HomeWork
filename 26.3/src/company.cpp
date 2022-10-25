@@ -39,11 +39,11 @@ company::Manager::Manager()
 {
     m_name = "NONE_M";
     m_task = 0;
-    m_free_teamates.empty();
-    m_busy_teamates.empty();
+    m_free_teamates.clear();
+    m_busy_teamates.clear();
 }
 
-company::Manager::Manager(std::string name,int id, std::list<Worker>& team)
+company::Manager::Manager(std::string name,int id, std::list<Worker> team)
 {
     m_name = name;
     m_id = id;
@@ -58,7 +58,7 @@ void company::Manager::free_team()
         w.take_task(0);
         m_free_teamates.push_back(w);
     }
-    m_busy_teamates.empty();
+    m_busy_teamates.clear();
 
 }
 
@@ -90,7 +90,7 @@ std::string company::Manager::team_report()
     return report;
 }
 
-company::Director::Director(std::string name, std::list<Manager>& team)
+company::Director::Director(std::string name, std::list<Manager> team)
 {
     m_name = name;
     m_task = 0;
