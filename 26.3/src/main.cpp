@@ -11,7 +11,7 @@ int main(int, char**) {
     int teamsAmount;
     std::cin >> teamsAmount;
 
-    std::list<company::Manager> teams;
+    std::vector<company::Manager> teams;
     for (int i = 0; i < teamsAmount; i++)
     {
         
@@ -19,7 +19,7 @@ int main(int, char**) {
         int workers;
         std::cin >> workers;
 
-        std::list<company::Worker> team;
+        std::vector<company::Worker> team;
         for (int j = 0; j < workers; j++)
         {
             std::string worker_name = "worker_"+std::to_string(j+1);
@@ -40,12 +40,10 @@ int main(int, char**) {
     int newJob;
     bool done;
     do {
-        std::cout << "Please enter new job number: ";
+        std::cout << "\nPlease enter new job number: ";
         std::cin >> newJob;
-        director.take_task(newJob);
-        done = director.give_task();
-        std::cout << director.team_report();
-    } while (!done);
+        done = director.give_job(newJob);
+    } while (done);
     
     std::cout << "################################\n";
     return 0;

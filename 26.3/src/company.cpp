@@ -1,133 +1,96 @@
-#include "company.h"
 #include <iostream>
+
+#include "company.h"
 
 company::Worker::Worker()
 {
-    m_name = "NONE_W";
-    m_task = 0;
+    m_name = "UNKNOWN";
+    m_job = -1;
 }
 
 company::Worker::Worker(std::string name)
 {
     m_name = name;
-    m_task = 0;
+    m_job = 0;
 }
 
-void company::Worker::take_task(int task)
+bool company::Worker::free_job_check()
 {
-    m_task = task;
+    return !m_job;
 }
-
-bool company::Worker::empty_task_check()
+void company::Worker::take_job(char job)
 {
-    return m_task == 0;
-}
-
-std::string company::Worker::job_report()
-{
-    if (((char)m_task != 'A')||((char)m_task != 'B')||((char)m_task != 'C'))
+    if ((job != 'A')&&(job != 'B')&&(job != 'C'))
     {
-        return m_name + " received wrong task (" + std::to_string(m_task) + ")";       
+        std::cout << "\t" << m_name << " recived wrong job (" << job << ")\n";
     }
+    else 
+    {
+        std::cout << "\t"  << m_name << " recived " << job << " job\n";
+        m_job = job;
+    }
+} 
 
-    return m_name + " received task " + (char)m_task;
-}
-
-
-
-company::Manager::Manager()
-{
-    m_name = "NONE_M";
-    m_task = 0;
-    m_free_teamates.clear();
-    m_busy_teamates.clear();
-}
-
-company::Manager::Manager(std::string name,int id, std::list<Worker> team)
+company::Manager::Manager(std::string name, int id, std::vector<Worker> team)
 {
     m_name = name;
     m_id = id;
-    m_task = 0;
-    m_free_teamates = team; 
+    m_team = team;
+    m_free_team_size = m_team.size();
 }
 
-void company::Manager::free_team()
+int company::Manager::give_job(int job)
 {
-    for (Worker& w: m_busy_teamates)
+    std::srand(job + m_id);
+    int taskCount = rand()%(m_free_team_size+1);
+    std::cout << m_name << " give team " << taskCount << " jobs: \n";
+    if (taskCount == 0 ) return 0;
+    for (Worker& w : m_team)
     {
-        w.take_task(0);
-        m_free_teamates.push_back(w);
+        if (w.free_job_check())
+        {
+            w.take_job((char)(65+std::rand()%3));
+            m_free_team_size -= 1;
+            taskCount -= 1;
+            if (taskCount == 0) break;
+        }
     }
-    m_busy_teamates.clear();
-
-}
-
-int company::Manager::give_task()
-{    
-    std::srand(m_id);
-    int tasksCount = std::rand()%(m_free_teamates.size()+1);
-    for (int i = 0; i < tasksCount; i++)
-    {
-        if (m_free_teamates.empty()) return 0;
-        company::Worker dummy = m_free_teamates.front(); 
-        dummy.take_task(65+rand()%2); // ascii 'A' 'B' or 'C'
-        m_busy_teamates.push_back(dummy);
-        m_free_teamates.pop_front();
-    }   
-
-    return 1;
-}
-
-std::string company::Manager::team_report()
-{
-    std::string report;
-    report = m_name + " give to my team " + std::to_string(m_task) + " task\n";
-    report += std::to_string(m_id) + "_team: \n";
-    for (Worker& w : m_busy_teamates)
-    {
-        report += "\t" + w.job_report() + "\n";
-    }
-    return report;
-}
-
-company::Director::Director(std::string name, std::list<Manager> team)
-{
-    m_name = name;
-    m_task = 0;
-    m_free_teamates = team;
-    
+    if (m_free_team_size == 0) return 1;
+    return 0;
 }
 
 bool company::Manager::operator==(Manager m)
 {
-    if (m_id == m.m_id) return 1;
-    return 0;
+    return m_id == m.m_id;
 }
 
-int company::Director::give_task()
+company::Director::Director(std::string name, std::vector<Manager> team)
 {
-    if (m_free_teamates.empty()) return 1;
-    for (Manager& m : m_free_teamates)
+    m_name = name;
+    m_team = team;
+    m_busy_team.clear();
+}
+
+bool company::Director::find_in_vec(std::vector<Manager> v, Manager fm)
+{
+    for (Manager m : v)
     {
-        std::cout << m.m_name << "\n";
-        m.take_task(m_task);
-        if (m.give_task() == 0) // manager have't free workers
-        {
-            m_busy_teamates.push_back(m);
-            m_free_teamates.remove(m);           
-        }
+        if (m == fm) return 1;
     }
     return 0;
 }
 
-std::string company::Director::team_report()
+int company::Director::give_job(int job)
 {
-    std::string report;
-    report += std::string(15,'-') + "\n";
-    report += m_name + " task " + std::to_string(m_task) + "\n";
-    for (Manager& m : m_busy_teamates)
+    std::cout << m_name <<" how have a " << job << " job\n";
+    for (Manager& m : m_team)
     {
-        report += m.team_report();
-    } 
-    return report;
+        if (find_in_vec(m_busy_team,m)) continue;
+        if(m.give_job(job))
+        {
+            m_busy_team.push_back(m);
+            if (m_busy_team.size() == m_team.size()) return 0;
+        }
+    }
+    return 1;
 }
