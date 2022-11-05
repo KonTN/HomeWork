@@ -42,7 +42,7 @@ company::Manager::Manager(std::string name, int id, std::vector<Worker> team)
 int company::Manager::give_job(int job)
 {
     std::srand(job + m_id);
-    int taskCount = rand()%(m_free_team_size+1);
+    int taskCount = 1+rand()%(m_free_team_size);
     std::cout << m_name << " give team " << taskCount << " jobs: \n";
     if (taskCount == 0 ) return 0;
     for (Worker& w : m_team)
