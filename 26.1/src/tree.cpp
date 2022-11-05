@@ -5,7 +5,7 @@ Tree::Tree(Tree* root)
 {
     myRoot = root;
     subTrees.clear();
-};
+}
 
 Tree* Tree::add_branch()
 {
@@ -14,19 +14,19 @@ Tree* Tree::add_branch()
     return &subTrees.back();
 }
 
-std::vector<Tree> Tree::get_subtree()
+std::list<Tree> Tree::get_subtree()
 {
     return subTrees;
 }
 
-std::vector<Tree> Tree::get_subtree_recursive()
+std::list<Tree> Tree::get_subtree_recursive()
 {
-    std::vector<Tree> retV;
+    std::list<Tree> retV;
     rec_pass(this, retV);
     return retV;
 }
 
-void Tree::rec_pass(Tree* root, std::vector<Tree>& branches)
+void Tree::rec_pass(Tree* root, std::list<Tree>& branches)
 {
     if (root->get_subtree().empty())
     {
