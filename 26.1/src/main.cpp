@@ -1,9 +1,13 @@
 #include <iostream>
 #include <tree.h>
 
-void print_tree(Tree &wood, int tree_num)
-{
-    Tree tree = wood.get_subtree()[tree_num];
+void print_tree(Tree wood, int tree_num) {
+    std::list<Tree> myWood = wood.get_subtree();
+    for (int i = 0; i < tree_num; i++)
+    {
+        myWood.pop_front();
+    }
+    Tree tree = myWood.front();
     std::cout << "root" << "->" << "\n";
     for (Tree &big_branch : tree.get_subtree())
     {
@@ -72,7 +76,7 @@ int main(int, char**) {
             }
             else
             {
-                foundBranch = &t;
+                foundBranch = t.get_subtree().front().get_root();
             }
 
             for (Tree &tr : foundBranch->get_subtree())
